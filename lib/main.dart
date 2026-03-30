@@ -1,4 +1,4 @@
-import 'package:day5_app/screen/spalsh_screen.dart';
+import 'package:day5_app/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {

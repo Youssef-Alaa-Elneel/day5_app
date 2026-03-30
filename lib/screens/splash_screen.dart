@@ -1,4 +1,4 @@
-import 'package:day5_app/screen/login_screen.dart';
+import 'package:day5_app/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
