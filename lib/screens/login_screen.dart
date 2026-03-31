@@ -1,3 +1,6 @@
+// import 'package:day5_app/data/api/Loginapi.dart';
+import 'package:day5_app/data/services/auth_service.dart';
+import 'package:day5_app/screens/home_page.dart';
 import 'package:day5_app/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -13,10 +16,15 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   // This widget is the root of your application.
   final _formKey = GlobalKey<FormBuilderState>();
+  // final ApiClient apiClient = ApiClient();
+  final AuthService authService = AuthService();
+
+  String? token;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Login Screen',
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
       home: Scaffold(
@@ -29,21 +37,9 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 children: [
                   FormBuilderTextField(
-                    name: 'name',
-                    decoration: InputDecoration(labelText: 'name'),
-                    validator: FormBuilderValidators.required(),
-                  ),
-
-                  SizedBox(height: 10),
-
-                  FormBuilderTextField(
                     name: 'email',
                     decoration: InputDecoration(labelText: 'email'),
-                    keyboardType: TextInputType.number,
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
-                      FormBuilderValidators.numeric(),
-                    ]),
+                    validator: FormBuilderValidators.required(),
                   ),
 
                   SizedBox(height: 10),
@@ -62,12 +58,29 @@ class _LoginScreenState extends State<LoginScreen> {
             /// Button
             MaterialButton(
               color: Theme.of(context).colorScheme.secondary,
-              onPressed: () {
-                // Validate and save the form values
-                _formKey.currentState?.saveAndValidate();
-                debugPrint(_formKey.currentState?.value.toString());
+              onPressed: () async {
+                final isValid = _formKey.currentState?.saveAndValidate();
 
-                // On another side, can access all field values without saving form with instantValues
+                if (isValid!) {
+                  final data = _formKey.currentState!.value;
+
+                  final result = await authService.login(
+                    data['email'],
+                    data['password'],
+                  );
+
+                  if (result != null) {
+                    token = result['token'];
+                    print("Token: $token");
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => HomePage()),
+                    );
+                  } else {
+                    print("Login Failed");
+                  }
+                }
               },
               child: const Text('Login'),
             ),
