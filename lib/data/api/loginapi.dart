@@ -51,6 +51,23 @@ class ApiClient {
     );
   }
 
+  Future<Response> getData(
+    String url, {
+    Map<String, dynamic>? query,
+    Map<String, String>? headers,
+  }) async {
+    try {
+      final response = await _dio.get(
+        url,
+        queryParameters: query,
+        options: Options(headers: headers),
+      );
+      return response;
+    } catch (e) {
+      return Response(statusCode: 1, requestOptions: RequestOptions());
+    }
+  }
+
   Future<Response> postUser(
     String uri,
     dynamic body, {
@@ -60,6 +77,55 @@ class ApiClient {
       final response = await _dio.post(
         uri,
         data: body,
+        options: Options(headers: headers),
+      );
+      return response;
+    } catch (e) {
+      return Response(statusCode: 1, requestOptions: RequestOptions());
+    }
+  }
+
+  Future<Response> putData(
+    String uri,
+    dynamic body, {
+    Map<String, String>? headers,
+  }) async {
+    try {
+      final response = await _dio.put(
+        uri,
+        data: body,
+        options: Options(headers: headers),
+      );
+      return response;
+    } catch (e) {
+      return Response(statusCode: 1, requestOptions: RequestOptions());
+    }
+  }
+
+  Future<Response> patchData(
+    String uri,
+    dynamic body, {
+    Map<String, String>? headers,
+  }) async {
+    try {
+      final response = await _dio.patch(
+        uri,
+        data: body,
+        options: Options(headers: headers),
+      );
+      return response;
+    } catch (e) {
+      return Response(statusCode: 1, requestOptions: RequestOptions());
+    }
+  }
+
+  Future<Response> deleteData(
+    String uri, {
+    Map<String, String>? headers,
+  }) async {
+    try {
+      final response = await _dio.delete(
+        uri,
         options: Options(headers: headers),
       );
       return response;

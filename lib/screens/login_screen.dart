@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -63,19 +66,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 if (isValid!) {
                   final data = _formKey.currentState!.value;
+                  final authProvider = Provider.of<AuthProvider>(
+                    context,
+                    listen: false,
+                  );
 
-                  final result = await authService.login(
+                  final success = await authProvider.login(
                     data['email'],
                     data['password'],
                   );
 
-                  if (result != null) {
-                    token = result['token'];
-                    print("Token: $token");
-
-                    Navigator.push(
+                  if (success) {
+                    Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (_) => HomePage()),
+                      MaterialPageRoute(builder: (_) => const HomePage()),
                     );
                   } else {
                     print("Login Failed");
