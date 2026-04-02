@@ -1,5 +1,7 @@
 // import 'package:day5_app/data/api/loginapi.dart';
 // import 'package:day5_app/data/models/product_model.dart';
+import 'package:day5_app/providers/cart_provider.dart';
+import 'package:day5_app/screens/cart_Screen.dart';
 import 'package:flutter/material.dart';
 // import '../data/services/product_service.dart';
 // import '../data/services/category_service.dart';
@@ -31,7 +33,21 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Products')),
+      appBar: AppBar(
+        title: const Text('Products'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.shopping_cart),
+            onPressed: () {
+              // الكود بتاعك اللي بينقل لصفحة السلة يتحط هنا
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const CartScreen()),
+              );
+            },
+          ),
+        ],
+      ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -126,6 +142,31 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.green,
                                 fontWeight: FontWeight.w700,
                                 fontSize: 15,
+                              ),
+                            ),
+                            MaterialButton(
+                              color: Colors.blue.shade400,
+                              onPressed: () {
+                                // 1. استدعاء دالة الإضافة من الـ Provider
+                                // لاحظ إننا بنمرر كائن الـ product الخاص بالعنصر الحالي في الـ GridView
+                                Provider.of<CartProvider>(
+                                  context,
+                                  listen: false,
+                                ).addToCart(product);
+
+                                // 2. إظهار رسالة صغيرة تأكد إن المنتج انضاف
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('تمت الإضافة للسلة بنجاح!'),
+                                    duration: Duration(
+                                      seconds: 1,
+                                    ), // بتختفي بسرعة
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                'Add To Cart',
+                                style: TextStyle(color: Colors.white),
                               ),
                             ),
                           ],
